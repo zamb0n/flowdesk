@@ -799,23 +799,33 @@
 </footer>
 
 <script>
-  function handleSubmit(e, successId) {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.querySelector('input[type="email"]').value;
-    const success = document.getElementById(successId);
+  async function handleSubmit(e, successId) {
+  e.preventDefault();
+  const form = e.target;
+  const email = form.querySelector('input[type="email"]').value;
+  const success = document.getElementById(successId);
+  const button = form.querySelector('button');
 
-    // Store email locally for now
-    const emails = JSON.parse(localStorage.getItem('waitlist') || '[]');
-    if (!emails.includes(email)) emails.push(email);
-    localStorage.setItem('waitlist', JSON.stringify(emails));
+  button.textContent = 'Sending...';
+  button.disabled = true;
+
+  try {
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (!res.ok) throw new Error('Failed');
 
     form.style.display = 'none';
     success.style.display = 'block';
-
-    // TODO: Replace with real email service (Resend, Mailchimp, Loops, etc.)
-    console.log('Waitlist signup:', email);
+  } catch (err) {
+    button.textContent = 'Try again';
+    button.disabled = false;
+    alert('Something went wrong. Please try again.');
   }
+}
 
   // Smooth scroll for nav CTA
   document.querySelector('nav a.cta-nav').addEventListener('click', function(e) {
