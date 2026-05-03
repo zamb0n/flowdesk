@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowDesk — The AI Workflow Layer for Freelance Marketers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a08;
+    --white: #f5f2eb;
+    --cream: #ede9df;
+    --accent: #c8f53a;
+    --accent-dark: #9bc420;
+    --muted: #6b6b5e;
+    --border: rgba(245,242,235,0.12);
+    --card-bg: rgba(245,242,235,0.04);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(10,10,8,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav a.cta-nav {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--accent);
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  nav a.cta-nav:hover { background: var(--accent-dark); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2.5rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,245,58,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.25s;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: rgba(245,242,235,0.65);
+    max-width: 520px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .hero-sub strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── SPLIT LINE ── */
+  .split-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.55s;
+  }
+
+  .split-line::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+    max-width: 400px;
+  }
+
+  .split-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── EMAIL FORM ── */
+  .email-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.65s;
+  }
+
+  .email-form input[type="email"] {
+    flex: 1;
+    background: var(--card-bg);
+    border: 0.5px solid rgba(245,242,235,0.2);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9375rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .email-form input[type="email"]::placeholder { color: var(--muted); }
+  .email-form input[type="email"]:focus { border-color: var(--accent); }
+
+  .email-form button {
+    background: var(--accent);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .email-form button:hover { background: var(--accent-dark); }
+  .email-form button:active { transform: scale(0.98); }
+
+  .form-note {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.75s;
+  }
+
+  .success-msg {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--accent);
+    padding: 0.875rem 0;
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    overflow: hidden;
+    padding: 0.875rem 0;
+    background: rgba(200,245,58,0.03);
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 3rem;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .ticker-item span {
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+
+  /* ── PAIN SECTION ── */
+  .section {
+    padding: 6rem 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .section h2 em {
+    font-style: normal;
+    color: var(--muted);
+  }
+
+  /* ── PAIN GRID ── */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 3.5rem;
+  }
+
+  .pain-card {
+    background: var(--black);
+    padding: 2rem 1.75rem;
+    position: relative;
+  }
+
+  .pain-card::before {
+    content: attr(data-num);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: rgba(245,242,235,0.04);
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .pain-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.625rem;
+    color: var(--white);
+  }
+
+  .pain-card p {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: rgba(245,242,235,0.5);
+    line-height: 1.65;
+  }
+
+  .pain-hours {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(200,245,58,0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    margin-bottom: 0.875rem;
+  }
+
+  /* ── FEATURES ── */
+  .features-wrap {
+    border-top: 0.5px solid var(--border);
+    padding: 6rem 2.5rem;
+  }
+
+  .features-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .feature-item:last-child { border-bottom: none; }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(200,245,58,0.08);
+    border: 0.5px solid rgba(200,245,58,0.2);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .feature-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .feature-text h3 {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+  }
+
+  .feature-text p {
+    font-size: 0.8125rem;
+    font-weight: 300;
+    color: rgba(245,242,235,0.5);
+    line-height: 1.65;
+  }
+
+  /* ── TERMINAL MOCKUP ── */
+  .terminal {
+    background: #0e0e0c;
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(245,242,235,0.03);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28ca41; }
+
+  .terminal-label {
+    margin-left: auto;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .terminal-body { padding: 1.25rem 1rem; line-height: 2; }
+
+  .t-comment { color: #4a4a3e; }
+  .t-key { color: var(--accent); }
+  .t-val { color: rgba(245,242,235,0.6); }
+  .t-dim { color: #3a3a30; }
+  .t-success { color: #28ca41; }
+  .t-cursor {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* ── SOCIAL PROOF ── */
+  .proof-section {
+    border-top: 0.5px solid var(--border);
+    padding: 5rem 2.5rem;
+  }
+
+  .proof-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  .stat-box {
+    background: var(--black);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: rgba(245,242,235,0.45);
+    margin-top: 0.35rem;
+    display: block;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── BOTTOM CTA ── */
+  .bottom-cta {
+    border-top: 0.5px solid var(--border);
+    padding: 6rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bottom-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(200,245,58,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .bottom-cta h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+  }
+
+  .bottom-cta h2 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .bottom-cta .email-form {
+    justify-content: center;
+    opacity: 1;
+    animation: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  footer p {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  footer .logo { font-size: 1.1rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .hero { padding: 7rem 1.25rem 4rem; }
+    .section { padding: 4rem 1.25rem; }
+    .features-wrap { padding: 4rem 1.25rem; }
+    .features-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .terminal { position: static; }
+    .stat-row { grid-template-columns: 1fr; }
+    .email-form { flex-direction: column; }
+    .email-form button { width: 100%; }
+    .proof-section { padding: 4rem 1.25rem; }
+    .bottom-cta { padding: 4rem 1.25rem; }
+    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Flow<span>Desk</span></a>
+  <a href="#waitlist" class="cta-nav">Get early access</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">// AI workflow layer for freelance marketers</p>
+  <h1>Stop doing<em>their admin.</em>Start doing<em>your work.</em></h1>
+  <p class="hero-sub">
+    Freelance marketers are about to split into two groups.
+    Those who <strong>use AI to work half the hours at double the output</strong> —
+    and those who got replaced by someone who did.
+    FlowDesk puts you in group one.
+  </p>
+
+  <div class="split-line">
+    <span class="split-label">Join the waitlist — free early access</span>
+  </div>
+
+  <form class="email-form" id="hero-form" onsubmit="handleSubmit(event, 'hero-success')">
+    <input type="email" placeholder="your@email.com" required autocomplete="email">
+    <button type="submit">Get early access →</button>
+  </form>
+  <p id="hero-success" class="success-msg">✓ You're on the list. We'll be in touch.</p>
+  <p class="form-note">Free during beta. No credit card. No spam.</p>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span>→</span> Client reports on autopilot</span>
+    <span class="ticker-item"><span>→</span> Content calendars in 60 seconds</span>
+    <span class="ticker-item"><span>→</span> Auto-drafted client update emails</span>
+    <span class="ticker-item"><span>→</span> One brief → five content formats</span>
+    <span class="ticker-item"><span>→</span> Zero context switching</span>
+    <span class="ticker-item"><span>→</span> 10+ hours back every week</span>
+    <span class="ticker-item"><span>→</span> Client reports on autopilot</span>
+    <span class="ticker-item"><span>→</span> Content calendars in 60 seconds</span>
+    <span class="ticker-item"><span>→</span> Auto-drafted client update emails</span>
+    <span class="ticker-item"><span>→</span> One brief → five content formats</span>
+    <span class="ticker-item"><span>→</span> Zero context switching</span>
+    <span class="ticker-item"><span>→</span> 10+ hours back every week</span>
+  </div>
+</div>
+
+<!-- PAIN SECTION -->
+<div class="section">
+  <p class="section-label">// the problem</p>
+  <h2>You're losing <em>15 hours a week</em><br>to work that isn't marketing.</h2>
+
+  <div class="pain-grid">
+    <div class="pain-card" data-num="01">
+      <span class="pain-hours">~4 hrs/week</span>
+      <h3>Client reporting</h3>
+      <p>Pulling numbers from five platforms, pasting into a deck, formatting it so it looks professional. Every. Single. Month.</p>
+    </div>
+    <div class="pain-card" data-num="02">
+      <span class="pain-hours">~3 hrs/week</span>
+      <h3>Status update emails</h3>
+      <p>Writing the same "here's what we did this week" email to six different clients in six different tones.</p>
+    </div>
+    <div class="pain-card" data-num="03">
+      <span class="pain-hours">~4 hrs/week</span>
+      <h3>Content reformatting</h3>
+      <p>Taking one piece of content and manually reshaping it for Instagram, LinkedIn, Twitter, email, and the blog.</p>
+    </div>
+    <div class="pain-card" data-num="04">
+      <span class="pain-hours">~4 hrs/week</span>
+      <h3>Content calendar planning</h3>
+      <p>Staring at a blank spreadsheet trying to fill 30 days of content from a two-sentence brief.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-wrap">
+  <div class="features-inner">
+    <p class="section-label">// the fix</p>
+    <h2 class="section" style="padding:0; max-width:none;">What FlowDesk<br>actually does</h2>
+
+    <div class="features-grid">
+      <div class="feature-list">
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="feature-text">
+            <h3>Reports that write themselves</h3>
+            <p>Connect your analytics sources. FlowDesk pulls the data, writes the narrative, and formats the deck. Ready before your client asks for it.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="feature-text">
+            <h3>Content calendars from one brief</h3>
+            <p>Give FlowDesk a topic, a tone, and a timeframe. Get back a full 30-day calendar with copy hooks for every platform.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="feature-text">
+            <h3>Client update emails on autopilot</h3>
+            <p>FlowDesk monitors your project activity and drafts a weekly update for each client in their tone. You review, edit, send.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><polyline points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </div>
+          <div class="feature-text">
+            <h3>One piece of content → five formats</h3>
+            <p>Write once. FlowDesk adapts it for Instagram, LinkedIn, X, email, and long-form — each with the right length, tone, and hook.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TERMINAL MOCKUP -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="terminal-label">flowdesk — workflow engine</span>
+        </div>
+        <div class="terminal-body">
+          <div class="t-comment"># New email from: sarah@acmecorp.com</div>
+          <div class="t-comment"># Subject: "Can we get the monthly report?"</div>
+          <div>&nbsp;</div>
+          <div><span class="t-key">trigger</span> <span class="t-val">→ inbound_email</span></div>
+          <div><span class="t-key">action</span>  <span class="t-val">→ pull_analytics()</span></div>
+          <div><span class="t-dim">  ├ google_ads    ✓</span></div>
+          <div><span class="t-dim">  ├ meta_business ✓</span></div>
+          <div><span class="t-dim">  └ ga4           ✓</span></div>
+          <div>&nbsp;</div>
+          <div><span class="t-key">action</span>  <span class="t-val">→ generate_report()</span></div>
+          <div><span class="t-dim">  ├ write_narrative   ✓</span></div>
+          <div><span class="t-dim">  ├ format_deck       ✓</span></div>
+          <div><span class="t-dim">  └ attach_pdf        ✓</span></div>
+          <div>&nbsp;</div>
+          <div><span class="t-key">action</span>  <span class="t-val">→ draft_reply()</span></div>
+          <div><span class="t-dim">  tone: professional_warm</span></div>
+          <div>&nbsp;</div>
+          <div><span class="t-success">✓ Draft ready for review</span></div>
+          <div><span class="t-success">✓ Time elapsed: 0m 47s</span></div>
+          <div><span class="t-comment"># You used to spend 3 hours on this.</span></div>
+          <div>&nbsp;</div>
+          <div class="t-val">▸ awaiting your approval <span class="t-cursor"></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="proof-section">
+  <div class="proof-inner">
+    <p class="section-label">// why now</p>
+    <h2 class="section" style="padding:0; max-width:600px; margin-bottom:0;">The numbers that made us build this</h2>
+    <div class="stat-row">
+      <div class="stat-box">
+        <span class="stat-num">15hrs</span>
+        <span class="stat-label">lost per week to non-marketing tasks<br>by the average solo marketer</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">73%</span>
+        <span class="stat-label">of freelance marketers say admin work<br>is their biggest productivity killer</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">$0</span>
+        <span class="stat-label">extra revenue from those 15 hours —<br>they're invisible to your clients</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta" id="waitlist">
+  <h2>Ready to get your<em>week back?</em></h2>
+  <p style="font-size:1rem; font-weight:300; color:rgba(245,242,235,0.5); margin-bottom:2rem; max-width:440px; margin-left:auto; margin-right:auto; line-height:1.7;">
+    Join the waitlist. Free during beta for the first 200 marketers who sign up.
+  </p>
+  <form class="email-form" id="bottom-form" onsubmit="handleSubmit(event, 'bottom-success')" style="opacity:1; animation:none;">
+    <input type="email" placeholder="your@email.com" required autocomplete="email">
+    <button type="submit">Claim your spot →</button>
+  </form>
+  <p id="bottom-success" class="success-msg" style="display:none; justify-content:center;">✓ You're on the list. We'll be in touch soon.</p>
+  <p style="margin-top:0.75rem; font-size:0.75rem; color:var(--muted);">Free during beta · No credit card · Cancel anytime</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="logo">Flow<span>Desk</span></a>
+  <p>© 2026 FlowDesk. Built for freelancers who refuse to get left behind.</p>
+</footer>
+
+<script>
+  function handleSubmit(e, successId) {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.querySelector('input[type="email"]').value;
+    const success = document.getElementById(successId);
+
+    // Store email locally for now
+    const emails = JSON.parse(localStorage.getItem('waitlist') || '[]');
+    if (!emails.includes(email)) emails.push(email);
+    localStorage.setItem('waitlist', JSON.stringify(emails));
+
+    form.style.display = 'none';
+    success.style.display = 'block';
+
+    // TODO: Replace with real email service (Resend, Mailchimp, Loops, etc.)
+    console.log('Waitlist signup:', email);
+  }
+
+  // Smooth scroll for nav CTA
+  document.querySelector('nav a.cta-nav').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Intersection observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.pain-card, .feature-item, .stat-box').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
